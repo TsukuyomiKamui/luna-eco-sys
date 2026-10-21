@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: luna-res-system
+
+  # 1. Настройки подключения к PostgreSQL (для локального запуска)
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/luna_db}
+    username: ${DB_USERNAME:luna_admin}
+    password: ${DB_PASSWORD:luna_password}
+    driver-class-name: org.postgresql.Driver
+
+  # 2. Настройки Hibernate (ORM)
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Строго validate! Он не будет иметь прав ничего менять в PostgreSQL, а будет лишь сверять сущности с базой.
+      ddl-auto: validate
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: true # Делает SQL-запросы в консоли красивыми и читаемыми
+
+  # 3. Настройки Flyway (Миграции базы данных)
+  flyway:
+    enabled: true
+    # Указываем папку, где лежат наши скрипты V1__init_auth.sql, V1__init_menu.sql и т.д.
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  # 4. Настройки In-Memory кэша Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+# 5. Кастомные настройки нашей экосистемы (для модуля Auth)
+app:
+  jwt:
+    # Этот секретный ключ используется JwtTokenProvider для подписи токенов.
+    # В реальном продакшене он должен быть длинным и сложным!
+    secret: ${JWT_SECRET:SecretKeyToEncryptYourTokensMustBeVeryLongAndComplexLuna2026!}
+    # Время жизни Access Token (15 минут = 900 000 миллисекунд)
+    expiration-ms: 900000
+    refresh-expiration-ms: 604800000
+  bootstrap:
+    enabled: ${BOOTSTRAP_ENABLED:true}
+    admin-username: ${BOOTSTRAP_ADMIN_USERNAME:admin}
+    admin-password: ${BOOTSTRAP_ADMIN_PASSWORD:admin123}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized

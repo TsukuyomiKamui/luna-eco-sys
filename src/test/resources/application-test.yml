@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: 'jdbc:h2:mem:luna;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS auth\;CREATE SCHEMA IF NOT EXISTS menu\;CREATE SCHEMA IF NOT EXISTS pos\;CREATE SCHEMA IF NOT EXISTS inventory\;CREATE SCHEMA IF NOT EXISTS staff\;CREATE SCHEMA IF NOT EXISTS loyalty\;CREATE SCHEMA IF NOT EXISTS finance'
+    username: sa
+    password: ''
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        hbm2ddl.create_namespaces: true
+  flyway:
+    enabled: false
+  data:
+    redis:
+      repositories:
+        enabled: false
+app:
+  bootstrap:
+    enabled: false
